@@ -148,7 +148,7 @@ result
 all(result)
 
 ```
-##Based on the above analyis, it is true that every one of the on-screen Avengers has died at least once in the Comics.
+Based on the above analyis, it is true that every one of the on-screen Avengers has died at least once in the Comics. - Ben McGuire
 
 Make sure to include the code to derive the (numeric) fact for the statement
 ```{r}
