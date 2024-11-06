@@ -84,7 +84,9 @@ Each team member picks one of the statements in the FiveThirtyEight [analysis](h
 ### Include the code
 
 
-Neel- The MVP of the Earth-616 Marvel Universe Avengers has to be Jocasta — an android based on Janet van Dyne and built by Ultron — who has been destroyed five times and then recovered five times.
+"The MVP of the Earth-616 Marvel Universe Avengers has to be Jocasta — an android based on Janet van Dyne and built by Ultron — who has been destroyed five times and then recovered five times." - Neel
+
+Answer: Based off the code provided below Jocatsa has diead 5 times and has returned 5 times - Neel
 ```{r}
 # View Jocasta's death records
 jocasta_deaths_detail <- deaths %>%
