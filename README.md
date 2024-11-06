@@ -89,57 +89,73 @@ library(dplyr)
 ``` r
 library(tidyr)
 library(readr)
+library(tidyverse)
+```
 
+    ## Warning: package 'ggplot2' was built under R version 4.2.3
+
+    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+    ## ✔ forcats   1.0.0     ✔ purrr     1.0.1
+    ## ✔ ggplot2   3.5.1     ✔ stringr   1.5.0
+    ## ✔ lubridate 1.9.2     ✔ tibble    3.1.8
+
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ✖ dplyr::filter() masks stats::filter()
+    ## ✖ dplyr::lag()    masks stats::lag()
+    ## ℹ Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors
+
+``` r
 deaths <- av %>%
-  pivot_longer(cols = starts_with("Death"),
+  pivot_longer(cols = matches("Death[1-5]"),
                names_to = "Time",
                values_to = "Death") %>%
   mutate(Time = parse_number(Time),
          Death = tolower(Death)) %>%
   replace_na(list(Death = ""))
 
-
 head(deaths)
 ```
 
     ## # A tibble: 6 × 18
-    ##   URL                 Name.Alias Appearances Current. Gender Probationary.Introl
-    ##   <chr>               <chr>            <int> <chr>    <chr>  <chr>              
-    ## 1 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
-    ## 2 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
-    ## 3 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
-    ## 4 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
-    ## 5 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
-    ## 6 http://marvel.wiki… "Janet va…        1165 YES      FEMALE ""                 
-    ## # ℹ 12 more variables: Full.Reserve.Avengers.Intro <chr>, Year <int>,
-    ## #   Years.since.joining <int>, Honorary <chr>, Return1 <chr>, Return2 <chr>,
-    ## #   Return3 <chr>, Return4 <chr>, Return5 <chr>, Notes <chr>, Time <dbl>,
-    ## #   Death <chr>
+    ##   URL       Name.…¹ Appea…² Curre…³ Gender Proba…⁴ Full.…⁵  Year Years…⁶ Honor…⁷
+    ##   <chr>     <chr>     <int> <chr>   <chr>  <chr>   <chr>   <int>   <int> <chr>  
+    ## 1 http://m… "Henry…    1269 YES     MALE   ""      Sep-63   1963      52 Full   
+    ## 2 http://m… "Henry…    1269 YES     MALE   ""      Sep-63   1963      52 Full   
+    ## 3 http://m… "Henry…    1269 YES     MALE   ""      Sep-63   1963      52 Full   
+    ## 4 http://m… "Henry…    1269 YES     MALE   ""      Sep-63   1963      52 Full   
+    ## 5 http://m… "Henry…    1269 YES     MALE   ""      Sep-63   1963      52 Full   
+    ## 6 http://m… "Janet…    1165 YES     FEMALE ""      Sep-63   1963      52 Full   
+    ## # … with 8 more variables: Return1 <chr>, Return2 <chr>, Return3 <chr>,
+    ## #   Return4 <chr>, Return5 <chr>, Notes <chr>, Time <dbl>, Death <chr>, and
+    ## #   abbreviated variable names ¹​Name.Alias, ²​Appearances, ³​Current.,
+    ## #   ⁴​Probationary.Introl, ⁵​Full.Reserve.Avengers.Intro, ⁶​Years.since.joining,
+    ## #   ⁷​Honorary
 
 Similarly, deal with the returns of characters.
 
 ``` r
+library(tidyverse)
 returns <- av %>%
   pivot_longer(cols = starts_with("Return"), names_to = "Time", values_to = "Return") %>%
-  mutate(Time = parse_number(Time),
-         Return = factor(Return, levels = c("yes", "no", "")))
+  mutate(Time = parse_number(Time))
 
 head(returns)
 ```
 
     ## # A tibble: 6 × 18
-    ##   URL                 Name.Alias Appearances Current. Gender Probationary.Introl
-    ##   <chr>               <chr>            <int> <chr>    <chr>  <chr>              
-    ## 1 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
-    ## 2 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
-    ## 3 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
-    ## 4 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
-    ## 5 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
-    ## 6 http://marvel.wiki… "Janet va…        1165 YES      FEMALE ""                 
-    ## # ℹ 12 more variables: Full.Reserve.Avengers.Intro <chr>, Year <int>,
-    ## #   Years.since.joining <int>, Honorary <chr>, Death1 <chr>, Death2 <chr>,
-    ## #   Death3 <chr>, Death4 <chr>, Death5 <chr>, Notes <chr>, Time <dbl>,
-    ## #   Return <fct>
+    ##   URL       Name.…¹ Appea…² Curre…³ Gender Proba…⁴ Full.…⁵  Year Years…⁶ Honor…⁷
+    ##   <chr>     <chr>     <int> <chr>   <chr>  <chr>   <chr>   <int>   <int> <chr>  
+    ## 1 http://m… "Henry…    1269 YES     MALE   ""      Sep-63   1963      52 Full   
+    ## 2 http://m… "Henry…    1269 YES     MALE   ""      Sep-63   1963      52 Full   
+    ## 3 http://m… "Henry…    1269 YES     MALE   ""      Sep-63   1963      52 Full   
+    ## 4 http://m… "Henry…    1269 YES     MALE   ""      Sep-63   1963      52 Full   
+    ## 5 http://m… "Henry…    1269 YES     MALE   ""      Sep-63   1963      52 Full   
+    ## 6 http://m… "Janet…    1165 YES     FEMALE ""      Sep-63   1963      52 Full   
+    ## # … with 8 more variables: Death1 <chr>, Death2 <chr>, Death3 <chr>,
+    ## #   Death4 <chr>, Death5 <chr>, Notes <chr>, Time <dbl>, Return <chr>, and
+    ## #   abbreviated variable names ¹​Name.Alias, ²​Appearances, ³​Current.,
+    ## #   ⁴​Probationary.Introl, ⁵​Full.Reserve.Avengers.Intro, ⁶​Years.since.joining,
+    ## #   ⁷​Honorary
 
 Based on these datasets calculate the average number of deaths an
 Avenger suffers.
@@ -171,9 +187,156 @@ possible.
 ### FiveThirtyEight Statement
 
 “Out of 173 listed Avengers, my analysis found that 69 had died at least
-one time after they joined the team.”
+one time after they joined the team.” (Adam Zhu)
 
 ### Include the code
+
+“The MVP of the Earth-616 Marvel Universe Avengers has to be Jocasta —
+an android based on Janet van Dyne and built by Ultron — who has been
+destroyed five times and then recovered five times.” - Neel
+
+Answer: Based off the code provided below Jocatsa has diead 5 times and
+has returned 5 times - Neel
+
+``` r
+jocasta_deaths_detail <- deaths %>%
+  filter(Name.Alias == "Jocasta") %>%
+  mutate(DeathCount = ifelse(Death == "yes", 1, 0))
+jocasta_returns_detail <- returns %>%
+  filter(Name.Alias == "Jocasta") %>%
+  mutate(ReturnCount = ifelse(Return == "YES", 1, 0))
+print("Jocasta's Death Records:")
+```
+
+    ## [1] "Jocasta's Death Records:"
+
+``` r
+print(jocasta_deaths_detail)
+```
+
+    ## # A tibble: 5 × 19
+    ##   URL       Name.…¹ Appea…² Curre…³ Gender Proba…⁴ Full.…⁵  Year Years…⁶ Honor…⁷
+    ##   <chr>     <chr>     <int> <chr>   <chr>  <chr>   <chr>   <int>   <int> <chr>  
+    ## 1 http://m… Jocasta     141 YES     FEMALE Jul-80  Nov-88   1988      27 Full   
+    ## 2 http://m… Jocasta     141 YES     FEMALE Jul-80  Nov-88   1988      27 Full   
+    ## 3 http://m… Jocasta     141 YES     FEMALE Jul-80  Nov-88   1988      27 Full   
+    ## 4 http://m… Jocasta     141 YES     FEMALE Jul-80  Nov-88   1988      27 Full   
+    ## 5 http://m… Jocasta     141 YES     FEMALE Jul-80  Nov-88   1988      27 Full   
+    ## # … with 9 more variables: Return1 <chr>, Return2 <chr>, Return3 <chr>,
+    ## #   Return4 <chr>, Return5 <chr>, Notes <chr>, Time <dbl>, Death <chr>,
+    ## #   DeathCount <dbl>, and abbreviated variable names ¹​Name.Alias, ²​Appearances,
+    ## #   ³​Current., ⁴​Probationary.Introl, ⁵​Full.Reserve.Avengers.Intro,
+    ## #   ⁶​Years.since.joining, ⁷​Honorary
+
+``` r
+print("Jocasta's Return Records:")
+```
+
+    ## [1] "Jocasta's Return Records:"
+
+``` r
+print(jocasta_returns_detail)
+```
+
+    ## # A tibble: 5 × 19
+    ##   URL       Name.…¹ Appea…² Curre…³ Gender Proba…⁴ Full.…⁵  Year Years…⁶ Honor…⁷
+    ##   <chr>     <chr>     <int> <chr>   <chr>  <chr>   <chr>   <int>   <int> <chr>  
+    ## 1 http://m… Jocasta     141 YES     FEMALE Jul-80  Nov-88   1988      27 Full   
+    ## 2 http://m… Jocasta     141 YES     FEMALE Jul-80  Nov-88   1988      27 Full   
+    ## 3 http://m… Jocasta     141 YES     FEMALE Jul-80  Nov-88   1988      27 Full   
+    ## 4 http://m… Jocasta     141 YES     FEMALE Jul-80  Nov-88   1988      27 Full   
+    ## 5 http://m… Jocasta     141 YES     FEMALE Jul-80  Nov-88   1988      27 Full   
+    ## # … with 9 more variables: Death1 <chr>, Death2 <chr>, Death3 <chr>,
+    ## #   Death4 <chr>, Death5 <chr>, Notes <chr>, Time <dbl>, Return <chr>,
+    ## #   ReturnCount <dbl>, and abbreviated variable names ¹​Name.Alias,
+    ## #   ²​Appearances, ³​Current., ⁴​Probationary.Introl,
+    ## #   ⁵​Full.Reserve.Avengers.Intro, ⁶​Years.since.joining, ⁷​Honorary
+
+``` r
+jocasta_deaths <- jocasta_deaths_detail %>%
+  summarise(TotalDeaths = sum(DeathCount, na.rm = TRUE))
+jocasta_returns <- jocasta_returns_detail %>%
+  summarise(TotalReturns = sum(ReturnCount, na.rm = TRUE))
+print("Jocasta's Total Deaths and Returns:")
+```
+
+    ## [1] "Jocasta's Total Deaths and Returns:"
+
+``` r
+print(jocasta_deaths)
+```
+
+    ## # A tibble: 1 × 1
+    ##   TotalDeaths
+    ##         <dbl>
+    ## 1           5
+
+``` r
+print(jocasta_returns)
+```
+
+    ## # A tibble: 1 × 1
+    ##   TotalReturns
+    ##          <dbl>
+    ## 1            5
+
+``` r
+is_jocasta_mvp <- jocasta_deaths$TotalDeaths == 5 & jocasta_returns$TotalReturns == 5
+is_jocasta_mvp
+```
+
+    ## [1] TRUE
+
+“Of the nine Avengers we see on screen — Iron Man, Hulk, Captain
+America, Thor, Hawkeye, Black Widow, Scarlet Witch, Quicksilver and The
+Vision — every single one of them has died at least once in the course
+of their time Avenging in the comics.” - Ben McGuire
+
+``` r
+library(dplyr)
+
+
+avengers_data <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/avengers/avengers.csv", stringsAsFactors = FALSE)
+
+
+avenger_names <- c("Anthony Edward Stark", "Robert Bruce Banner", "Steven Rogers", "Thor Odinson", "Clinton Francis Barton", 
+                   "Natalia Alianovna Romanova", "Wanda Maximoff", "Pietro Maximoff", "Victor Shade (alias)")
+
+
+result <- sapply(avenger_names, function(name) {
+  
+  avenger_row <- avengers_data %>% filter(Name.Alias == name)
+  
+
+  death_columns <- c("Death1", "Death2", "Death3", "Death4", "Death5")
+  
+
+  any(!is.na(avenger_row[death_columns]))
+})
+
+
+result
+```
+
+    ##       Anthony Edward Stark        Robert Bruce Banner 
+    ##                       TRUE                       TRUE 
+    ##              Steven Rogers               Thor Odinson 
+    ##                       TRUE                       TRUE 
+    ##     Clinton Francis Barton Natalia Alianovna Romanova 
+    ##                       TRUE                       TRUE 
+    ##             Wanda Maximoff            Pietro Maximoff 
+    ##                       TRUE                       TRUE 
+    ##       Victor Shade (alias) 
+    ##                       TRUE
+
+``` r
+all(result)
+```
+
+    ## [1] TRUE
+
+Based on the above analyis, it is true that every one of the on-screen
+Avengers has died at least once in the Comics. - Ben McGuire
 
 Make sure to include the code to derive the (numeric) fact for the
 statement
@@ -205,10 +368,14 @@ list(
     ## $Avengers_With_Deaths
     ## [1] 64
 
+``` r
+# Adam Zhu
+```
+
 ### Include your answer
 
 Based on the analysis, the statement provided was incorrect. Here’s the
 corrected statement: “Out of 173 listed Avengers, my analysis found that
 64 had died at least one time after they joined the team.” This result
 indicates that 64 Avengers, not 69, experienced at least one death event
-after joining the team.
+after joining the team. (Adam Zhu)
