@@ -86,6 +86,37 @@ Each team member picks one of the statements in the FiveThirtyEight [analysis](h
 
 > "Of the nine Avengers we see on screen — Iron Man, Hulk, Captain America, Thor, Hawkeye, Black Widow, Scarlet Witch, Quicksilver and The Vision — every single one of them has died at least once in the course of their time Avenging in the comics." - Ben McGuire
 
+```{r}
+
+library(dplyr)
+
+
+avengers_data <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/avengers/avengers.csv", stringsAsFactors = FALSE)
+
+
+avenger_names <- c("Anthony Edward Stark", "Robert Bruce Banner", "Steven Rogers", "Thor Odinson", "Clinton Francis Barton", 
+                   "Natalia Alianovna Romanova", "Wanda Maximoff", "Pietro Maximoff", "Victor Shade (alias)")
+
+
+result <- sapply(avenger_names, function(name) {
+  
+  avenger_row <- avengers_data %>% filter(Name.Alias == name)
+  
+
+  death_columns <- c("Death1", "Death2", "Death3", "Death4", "Death5")
+  
+
+  any(!is.na(avenger_row[death_columns]))
+})
+
+
+result
+
+
+all(result)
+
+```
+##Based on the above analyis, it is true that every one of the on-screen Avengers has died at least once in the Comics.
 
 Make sure to include the code to derive the (numeric) fact for the statement
 ```{r}
