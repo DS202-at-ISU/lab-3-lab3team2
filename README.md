@@ -71,10 +71,93 @@ between 1 and 5 (look into the function `parse_number`); Death is a
 categorical variables with values “yes”, “no” and ““. Call the resulting
 data set `deaths`.
 
+``` r
+library(dplyr)
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+library(tidyr)
+library(readr)
+
+deaths <- av %>%
+  pivot_longer(cols = starts_with("Death"),
+               names_to = "Time",
+               values_to = "Death") %>%
+  mutate(Time = parse_number(Time),
+         Death = tolower(Death)) %>%
+  replace_na(list(Death = ""))
+
+
+head(deaths)
+```
+
+    ## # A tibble: 6 × 18
+    ##   URL                 Name.Alias Appearances Current. Gender Probationary.Introl
+    ##   <chr>               <chr>            <int> <chr>    <chr>  <chr>              
+    ## 1 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
+    ## 2 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
+    ## 3 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
+    ## 4 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
+    ## 5 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
+    ## 6 http://marvel.wiki… "Janet va…        1165 YES      FEMALE ""                 
+    ## # ℹ 12 more variables: Full.Reserve.Avengers.Intro <chr>, Year <int>,
+    ## #   Years.since.joining <int>, Honorary <chr>, Return1 <chr>, Return2 <chr>,
+    ## #   Return3 <chr>, Return4 <chr>, Return5 <chr>, Notes <chr>, Time <dbl>,
+    ## #   Death <chr>
+
 Similarly, deal with the returns of characters.
+
+``` r
+returns <- av %>%
+  pivot_longer(cols = starts_with("Return"), names_to = "Time", values_to = "Return") %>%
+  mutate(Time = parse_number(Time),
+         Return = factor(Return, levels = c("yes", "no", "")))
+
+head(returns)
+```
+
+    ## # A tibble: 6 × 18
+    ##   URL                 Name.Alias Appearances Current. Gender Probationary.Introl
+    ##   <chr>               <chr>            <int> <chr>    <chr>  <chr>              
+    ## 1 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
+    ## 2 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
+    ## 3 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
+    ## 4 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
+    ## 5 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
+    ## 6 http://marvel.wiki… "Janet va…        1165 YES      FEMALE ""                 
+    ## # ℹ 12 more variables: Full.Reserve.Avengers.Intro <chr>, Year <int>,
+    ## #   Years.since.joining <int>, Honorary <chr>, Death1 <chr>, Death2 <chr>,
+    ## #   Death3 <chr>, Death4 <chr>, Death5 <chr>, Notes <chr>, Time <dbl>,
+    ## #   Return <fct>
 
 Based on these datasets calculate the average number of deaths an
 Avenger suffers.
+
+``` r
+avg_deaths <- deaths %>%
+  mutate(DeathCount = ifelse(Death == "yes", 1, 0)) %>%  # Convert "yes" to 1, others to 0
+  group_by(Name.Alias) %>%                               # Group by Avenger name
+  summarise(AvgDeaths = sum(DeathCount)) %>%             # Sum Deaths per Avenger
+  summarise(AverageDeaths = mean(AvgDeaths, na.rm = TRUE))  # Calculate overall average
+
+avg_deaths
+```
+
+    ## # A tibble: 1 × 1
+    ##   AverageDeaths
+    ##           <dbl>
+    ## 1         0.546
 
 ## Individually
 
@@ -87,17 +170,45 @@ possible.
 
 ### FiveThirtyEight Statement
 
-> Quote the statement you are planning to fact-check.
+“Out of 173 listed Avengers, my analysis found that 69 had died at least
+one time after they joined the team.”
 
 ### Include the code
 
 Make sure to include the code to derive the (numeric) fact for the
 statement
 
+``` r
+# Filter to find Avengers who died at least once
+avengers_with_deaths <- deaths %>%
+  filter(Death == "yes") %>%
+  distinct(Name.Alias) %>%    # Select unique Avengers who died at least once
+  count() %>%                 # Count the number of unique Avengers who died
+  pull(n)
+
+# Total number of Avengers
+total_avengers <- av %>%
+  distinct(Name.Alias) %>%
+  count() %>%
+  pull(n)
+
+# Display results
+list(
+  Total_Avengers = total_avengers,
+  Avengers_With_Deaths = avengers_with_deaths
+)
+```
+
+    ## $Total_Avengers
+    ## [1] 163
+    ## 
+    ## $Avengers_With_Deaths
+    ## [1] 64
+
 ### Include your answer
 
-Include at least one sentence discussing the result of your
-fact-checking endeavor.
-
-Upload your changes to the repository. Discuss and refine answers as a
-team.
+Based on the analysis, the statement provided was incorrect. Here’s the
+corrected statement: “Out of 173 listed Avengers, my analysis found that
+64 had died at least one time after they joined the team.” This result
+indicates that 64 Avengers, not 69, experienced at least one death event
+after joining the team.
