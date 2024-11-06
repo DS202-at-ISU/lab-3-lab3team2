@@ -88,39 +88,24 @@ Each team member picks one of the statements in the FiveThirtyEight [analysis](h
 
 Answer: Based off the code provided below Jocatsa has diead 5 times and has returned 5 times - Neel
 ```{r}
-# View Jocasta's death records
 jocasta_deaths_detail <- deaths %>%
   filter(Name.Alias == "Jocasta") %>%
   mutate(DeathCount = ifelse(Death == "yes", 1, 0))
-
-# View Jocasta's return records
 jocasta_returns_detail <- returns %>%
   filter(Name.Alias == "Jocasta") %>%
   mutate(ReturnCount = ifelse(Return == "YES", 1, 0))
-
-# Display Jocasta's detailed death and return records
 print("Jocasta's Death Records:")
 print(jocasta_deaths_detail)
-
 print("Jocasta's Return Records:")
 print(jocasta_returns_detail)
-
-# Summarize Jocasta's total counts
 jocasta_deaths <- jocasta_deaths_detail %>%
   summarise(TotalDeaths = sum(DeathCount, na.rm = TRUE))
-
 jocasta_returns <- jocasta_returns_detail %>%
   summarise(TotalReturns = sum(ReturnCount, na.rm = TRUE))
-
-# Display Jocasta's summarized counts
 print("Jocasta's Total Deaths and Returns:")
 print(jocasta_deaths)
 print(jocasta_returns)
-
-# Check if Jocasta has exactly 5 deaths and 5 returns
 is_jocasta_mvp <- jocasta_deaths$TotalDeaths == 5 & jocasta_returns$TotalReturns == 5
-
-# Display the final result for the MVP check
 is_jocasta_mvp
 
 ```
