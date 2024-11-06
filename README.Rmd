@@ -40,9 +40,6 @@ deaths <- av %>%
          Death = tolower(Death)) %>%
   replace_na(list(Death = ""))
 
-   pivot_longer(cols = starts_with("Death"), names_to = "Time", values_to = "Death") %>%
-   mutate(Time = parse_number(Time),
-          Death = factor(Death, levels = c("yes", "no", "")))
 
 head(deaths)
 ```
