@@ -59,7 +59,13 @@ head(returns)
 Based on these datasets calculate the average number of deaths an Avenger suffers. 
 
 ```{r}
+avg_deaths <- deaths %>%
+  mutate(DeathCount = ifelse(Death == "yes", 1, 0)) %>%  # Convert "yes" to 1, others to 0
+  group_by(Name.Alias) %>%                               # Group by Avenger name
+  summarise(AvgDeaths = sum(DeathCount)) %>%             # Sum Deaths per Avenger
+  summarise(AverageDeaths = mean(AvgDeaths, na.rm = TRUE))  # Calculate overall average
 
+avg_deaths
 ```
 
 ## Individually
