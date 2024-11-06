@@ -36,39 +36,7 @@ Similarly, deal with the returns of characters.
 Based on these datasets calculate the average number of deaths an Avenger suffers. 
 
 ```{r}
-library(dplyr)
-library(tidyr)
-library(readr)
 
-deaths <- data %>%
-  pivot_longer(
-    cols = starts_with("Death"),
-    names_to = "Time",
-    values_to = "Death"
-  ) %>%
-  mutate(
-    Time = readr::parse_number(Time),  # Extract the time number from the column name
-    Death = as.factor(Death)           # Convert Death column to a factor for categorical values
-  )
-
-# Now we deal with the return columns in a similar way
-# Assuming the columns follow a similar naming pattern like "Return1" to "Return5"
-returns <- data %>%
-  tidyr::pivot_longer(
-    cols = starts_with("Return"),
-    names_to = "Time",
-    values_to = "Return"
-  ) %>%
-  mutate(
-    Time = readr::parse_number(Time),  # Extract the time number from the column name
-    Return = as.factor(Return)         # Convert Return column to a factor for categorical values
-  )
-
-# Calculate the average number of deaths an Avenger suffers
-# We assume "Death" has "yes" or "no" values for death events
-avg_deaths <- deaths %>%
-  filter(Death == "yes") %>%
-  group_by(Name) %>
 ```
 
 ## Individually
