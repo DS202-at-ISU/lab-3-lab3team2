@@ -50,8 +50,7 @@ Similarly, deal with the returns of characters.
 library(tidyverse)
 returns <- av %>%
   pivot_longer(cols = starts_with("Return"), names_to = "Time", values_to = "Return") %>%
-  mutate(Time = parse_number(Time),
-         Return = factor(Return, levels = c("yes", "no", "")))
+  mutate(Time = parse_number(Time))
 
 head(returns)
 ```
@@ -79,6 +78,45 @@ Each team member picks one of the statements in the FiveThirtyEight [analysis](h
 > Quote the statement you are planning to fact-check.
 
 ### Include the code
+
+Neel- The MVP of the Earth-616 Marvel Universe Avengers has to be Jocasta — an android based on Janet van Dyne and built by Ultron — who has been destroyed five times and then recovered five times.
+```{r}
+# View Jocasta's death records
+jocasta_deaths_detail <- deaths %>%
+  filter(Name.Alias == "Jocasta") %>%
+  mutate(DeathCount = ifelse(Death == "yes", 1, 0))
+
+# View Jocasta's return records
+jocasta_returns_detail <- returns %>%
+  filter(Name.Alias == "Jocasta") %>%
+  mutate(ReturnCount = ifelse(Return == "YES", 1, 0))
+
+# Display Jocasta's detailed death and return records
+print("Jocasta's Death Records:")
+print(jocasta_deaths_detail)
+
+print("Jocasta's Return Records:")
+print(jocasta_returns_detail)
+
+# Summarize Jocasta's total counts
+jocasta_deaths <- jocasta_deaths_detail %>%
+  summarise(TotalDeaths = sum(DeathCount, na.rm = TRUE))
+
+jocasta_returns <- jocasta_returns_detail %>%
+  summarise(TotalReturns = sum(ReturnCount, na.rm = TRUE))
+
+# Display Jocasta's summarized counts
+print("Jocasta's Total Deaths and Returns:")
+print(jocasta_deaths)
+print(jocasta_returns)
+
+# Check if Jocasta has exactly 5 deaths and 5 returns
+is_jocasta_mvp <- jocasta_deaths$TotalDeaths == 5 & jocasta_returns$TotalReturns == 5
+
+# Display the final result for the MVP check
+is_jocasta_mvp
+
+```
 
 Make sure to include the code to derive the (numeric) fact for the statement
 
