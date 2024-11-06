@@ -54,8 +54,7 @@ Similarly, deal with the returns of characters.
 library(tidyverse)
 returns <- av %>%
   pivot_longer(cols = starts_with("Return"), names_to = "Time", values_to = "Return") %>%
-  mutate(Time = parse_number(Time),
-         Return = factor(Return, levels = c("yes", "no", "")))
+  mutate(Time = parse_number(Time))
 
 head(returns)
 ```
@@ -84,7 +83,34 @@ Each team member picks one of the statements in the FiveThirtyEight [analysis](h
 
 ### Include the code
 
-> "Of the nine Avengers we see on screen — Iron Man, Hulk, Captain America, Thor, Hawkeye, Black Widow, Scarlet Witch, Quicksilver and The Vision — every single one of them has died at least once in the course of their time Avenging in the comics." - Ben McGuire
+
+"The MVP of the Earth-616 Marvel Universe Avengers has to be Jocasta — an android based on Janet van Dyne and built by Ultron — who has been destroyed five times and then recovered five times." - Neel
+
+Answer: Based off the code provided below Jocatsa has diead 5 times and has returned 5 times - Neel
+```{r}
+jocasta_deaths_detail <- deaths %>%
+  filter(Name.Alias == "Jocasta") %>%
+  mutate(DeathCount = ifelse(Death == "yes", 1, 0))
+jocasta_returns_detail <- returns %>%
+  filter(Name.Alias == "Jocasta") %>%
+  mutate(ReturnCount = ifelse(Return == "YES", 1, 0))
+print("Jocasta's Death Records:")
+print(jocasta_deaths_detail)
+print("Jocasta's Return Records:")
+print(jocasta_returns_detail)
+jocasta_deaths <- jocasta_deaths_detail %>%
+  summarise(TotalDeaths = sum(DeathCount, na.rm = TRUE))
+jocasta_returns <- jocasta_returns_detail %>%
+  summarise(TotalReturns = sum(ReturnCount, na.rm = TRUE))
+print("Jocasta's Total Deaths and Returns:")
+print(jocasta_deaths)
+print(jocasta_returns)
+is_jocasta_mvp <- jocasta_deaths$TotalDeaths == 5 & jocasta_returns$TotalReturns == 5
+is_jocasta_mvp
+
+```
+
+"Of the nine Avengers we see on screen — Iron Man, Hulk, Captain America, Thor, Hawkeye, Black Widow, Scarlet Witch, Quicksilver and The Vision — every single one of them has died at least once in the course of their time Avenging in the comics." - Ben McGuire
 
 ```{r}
 
