@@ -179,3 +179,72 @@ list(
 ### Include your answer
 Based on the analysis, the statement provided was incorrect. Here’s the corrected statement: “Out of 173 listed Avengers, my analysis found that 64 had died at least one time after they joined the team.”
 This result indicates that 64 Avengers, not 69, experienced at least one death event after joining the team. (Adam Zhu)
+
+
+### FiveThirtyEight Statement
+
+>But you can only tempt death so many times. There’s a 2-in-3 chance that a 
+>member of the Avengers returned from their first stint in the afterlife, 
+>but only a 50 percent chance they recovered from a second or third death. (Jacob)
+
+### Include the code (Jacob)
+
+Make sure to include the code to derive the (numeric) fact for the statement
+```{r}
+# Filter to find Avengers who died at least once
+avengers_count_death1 <- av %>%
+  filter(Death1 == "YES") %>%   # filter based on if Death1 is yes
+  distinct(URL) %>%            # get distinct avengers
+  count()                     # Count the number of Avengers who died
+
+# Filter to find Avengers who returned after death1
+avengers_count_return1 <- av %>% 
+  filter(Return1 == "YES") %>%   # filter based on if Return1 is yes
+  distinct(URL) %>%             # get distinct avengers
+  count()                      # Count the number of Avengers who died
+
+#chance that a member of the Avengers returned from their first stint in the afterlife
+avengers_return1_rate <- (avengers_count_return1 / avengers_count_death1) * 100
+avengers_return1_rate
+
+# Filter to find Avengers who died at least twice
+avengers_count_death2 <- av %>%
+  filter(Death2 == "YES") %>%  # filter based on if Death1 is yes
+  distinct(URL) %>%
+  count()
+avengers_count_death2
+
+# Filter to find Avengers who returned after death2
+avengers_count_return2 <- av %>% 
+  filter(Return2 == "YES") %>%   # filter based on if Return1 is yes
+  distinct(URL) %>%             # get distinct avengers
+  count()                      # Count the number of Avengers who died
+avengers_count_return2
+
+#chance that a member of the Avengers returned from their second stint in the afterlife
+avengers_return2_rate <- (avengers_count_return2 / avengers_count_death2) * 100
+avengers_return2_rate
+
+# Filter to find Avengers who died at least three times
+avengers_count_death3 <- av %>%
+  filter(Death3 == "YES") %>%  # filter based on if Death1 is yes
+  distinct(URL) %>%
+  count()
+avengers_count_death3
+
+# Filter to find Avengers who returned after death3
+avengers_count_return3 <- av %>% 
+  filter(Return3 == "YES") %>%   # filter based on if Return1 is yes
+  distinct(URL) %>%             # get distinct avengers
+  count()                      # Count the number of Avengers who died
+avengers_count_return3
+
+#chance that a member of the Avengers returned from their third stint in the afterlife
+avengers_return3_rate <- (avengers_count_return3 / avengers_count_death3) * 100
+avengers_return3_rate
+
+```
+```
+### Include your answer   (Jacob)
+
+The statement made by fivethirtyeight is true for the return rates after death one, two, and three.
